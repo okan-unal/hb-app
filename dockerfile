@@ -14,8 +14,9 @@ RUN mkdir certs
 RUN sshpass -p "PASSWORD" rsync -rvz -e 'ssh -o StrictHostKeyChecking=no -p 22' --progress  USERNAME@HOST:/etc/kubernetes/pki/*.crt /certs/
 ## WE LEARN THE EXPIRY DATES OF THE CERTIFICATES AND WRITE THEM TO THE LOG FILE.
 RUN find /certs/ -type f -name "*.crt" -print|egrep -v 'apiserver-etcd-client.crt$'|xargs -L 1 -t  -i bash -c 'openssl x509  -noout -subject -dates  -in  {}' 1> /var/log/cert-checker.log
-## EXPOSE PORTS.
+## COPY EXPIRY DATES INFO TO NGINX DEFAULT FILE
 RUN cp /var/log/cert-checker.log /var/www/html/index.nginx-debian.html
+## EXPOSE PORTS.
 EXPOSE 80
 EXPOSE 443
 ## DEFINE DEFAULT COMMAND.
