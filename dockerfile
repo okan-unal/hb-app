@@ -11,7 +11,7 @@ WORKDIR /
 ## CREATE FOLDER
 RUN mkdir certs
 ## WE PULL FROM CURRENT FOLDER OF KUBERNETES ADMINISTRATOR CERTIFICATES
-RUN sshpass -p "hb2022" rsync -rvz -e 'ssh -o StrictHostKeyChecking=no -p 22' --progress  root@172.31.85.37:/etc/kubernetes/pki/*.crt /certs/
+RUN sshpass -p "PASSWORD" rsync -rvz -e 'ssh -o StrictHostKeyChecking=no -p 22' --progress  USERNAME@HOST:/etc/kubernetes/pki/*.crt /certs/
 ## WE LEARN THE EXPIRY DATES OF THE CERTIFICATES AND WRITE THEM TO THE LOG FILE.
 RUN find /certs/ -type f -name "*.crt" -print|egrep -v 'apiserver-etcd-client.crt$'|xargs -L 1 -t  -i bash -c 'openssl x509  -noout -subject -dates  -in  {}' 1> /var/log/cert-checker.log
 ## EXPOSE PORTS.
